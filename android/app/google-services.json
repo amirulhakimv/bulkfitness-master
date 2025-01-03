@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "576654875808",
+    "project_id": "bulkfitness-70d48",
+    "storage_bucket": "bulkfitness-70d48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576654875808:android:0eb7468d607c336827bdc5",
+        "android_client_info": {
+          "package_name": "com.example.bulkfitness"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKBDoBkhVhNJ3Edz-WkWEobS_V_eWDs94"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
