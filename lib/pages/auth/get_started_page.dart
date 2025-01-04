@@ -17,6 +17,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
   final _heightController = TextEditingController();
   final _currentWeightController = TextEditingController();
   final _goalWeightController = TextEditingController();
+  final _ageController = TextEditingController(); // New controller for age
   double? _bmi;
   String _bmiDescription = '';
 
@@ -33,6 +34,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
     _heightController.dispose();
     _currentWeightController.dispose();
     _goalWeightController.dispose();
+    _ageController.dispose(); // Dispose the age controller
     super.dispose();
   }
 
@@ -40,14 +42,16 @@ class _GetStartedPageState extends State<GetStartedPage> {
     double? height = double.tryParse(_heightController.text);
     double? currentWeight = double.tryParse(_currentWeightController.text);
     double? goalWeight = double.tryParse(_goalWeightController.text);
+    int? age = int.tryParse(_ageController.text); // Parse age
 
     if (height != null &&
         currentWeight != null &&
         goalWeight != null &&
+        age != null &&
         _selectedActivityLevel != null) {
       double bmi = currentWeight / ((height / 100) * (height / 100));
-      int goalCalories =
-      _calculateGoalCalories(height, currentWeight, _selectedSex, _selectedActivityLevel!);
+      int goalCalories = _calculateGoalCalories(
+          height, currentWeight, goalWeight, _selectedSex, _selectedActivityLevel!, age);
 
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
@@ -56,6 +60,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
           'height': height,
           'currentWeight': currentWeight,
           'goalWeight': goalWeight,
+          'age': age, // Save age to Firestore
           'activityLevel': _selectedActivityLevel,
           'bmi': bmi,
           'goalCalories': goalCalories,
@@ -71,12 +76,13 @@ class _GetStartedPageState extends State<GetStartedPage> {
     );
   }
 
-  int _calculateGoalCalories(double height, double weight, String sex, String activityLevel) {
+  int _calculateGoalCalories(double height, double weight, double goalWeight, String sex,
+      String activityLevel, int age) {
     double bmr;
     if (sex == 'M') {
-      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * 25); // Assuming age 25
+      bmr = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
     } else {
-      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * 25); // Assuming age 25
+      bmr = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
     }
 
     double activityFactor;
@@ -100,18 +106,33 @@ class _GetStartedPageState extends State<GetStartedPage> {
         activityFactor = 1.2;
     }
 
-    return (bmr * activityFactor).round();
+    int maintenanceCalories = (bmr * activityFactor).round();
+
+    // Adjust calories based on goal weight
+    double weightDifference = goalWeight - weight;
+    int calorieAdjustment;
+
+    if (weightDifference.abs() <= 0.5) {
+      // For small changes, aim for 0.5 kg per week
+      calorieAdjustment = (weightDifference > 0 ? 500 : -500);
+    } else {
+      // For larger changes, aim for 1 kg per week
+      calorieAdjustment = (weightDifference > 0 ? 1000 : -1000);
+    }
+
+    return maintenanceCalories + calorieAdjustment;
   }
 
   void _calculateBMI() {
     double? height = double.tryParse(_heightController.text);
     double? weight = double.tryParse(_currentWeightController.text);
+    int? age = int.tryParse(_ageController.text);
 
-    if (height != null && weight != null && height > 0) {
+    if (height != null && weight != null && age != null && height > 0) {
       double bmi = weight / ((height / 100) * (height / 100));
       setState(() {
         _bmi = bmi;
-        _bmiDescription = _getBMICategory(bmi);
+        _bmiDescription = _getBMICategory(bmi, age);
       });
     } else {
       setState(() {
@@ -121,11 +142,26 @@ class _GetStartedPageState extends State<GetStartedPage> {
     }
   }
 
-  String _getBMICategory(double bmi) {
-    if (bmi < 18.5) return 'Underweight';
-    if (bmi < 25) return 'Normal';
-    if (bmi < 30) return 'Overweight';
-    return 'Obese';
+  String _getBMICategory(double bmi, int age) {
+    if (age < 18) {
+      // BMI categories for children and teens (2-18 years)
+      if (bmi < 5) return 'Underweight';
+      if (bmi < 85) return 'Normal';
+      if (bmi < 95) return 'Overweight';
+      return 'Obese';
+    } else if (age >= 65) {
+      // BMI categories for older adults (65+ years)
+      if (bmi < 22) return 'Underweight';
+      if (bmi < 27) return 'Normal';
+      if (bmi < 30) return 'Overweight';
+      return 'Obese';
+    } else {
+      // Standard adult BMI categories
+      if (bmi < 18.5) return 'Underweight';
+      if (bmi < 25) return 'Normal';
+      if (bmi < 30) return 'Overweight';
+      return 'Obese';
+    }
   }
 
   Widget _buildTextField(TextEditingController controller, String suffix) {
@@ -173,6 +209,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
     bool isFormValid = _heightController.text.isNotEmpty &&
         _currentWeightController.text.isNotEmpty &&
         _goalWeightController.text.isNotEmpty &&
+        _ageController.text.isNotEmpty && // Check if age is entered
         _selectedActivityLevel != null;
 
     return Scaffold(
@@ -200,6 +237,10 @@ class _GetStartedPageState extends State<GetStartedPage> {
                           _buildLabel('Sex'),
                           const SizedBox(height: 8),
                           _buildGenderSelection(),
+                          const SizedBox(height: 20),
+                          _buildLabel('Age'),
+                          const SizedBox(height: 8),
+                          _buildTextField(_ageController, 'years'),
                           const SizedBox(height: 20),
                           _buildLabel('Height'),
                           const SizedBox(height: 8),
@@ -292,6 +333,7 @@ class _GetStartedPageState extends State<GetStartedPage> {
   }
 
   Widget _buildBMICard() {
+    int? age = int.tryParse(_ageController.text);
     return Center(
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -316,6 +358,14 @@ class _GetStartedPageState extends State<GetStartedPage> {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Age Group: ${age != null ? (age < 18 ? 'Child/Teen' : (age >= 65 ? 'Older Adult' : 'Adult')) : 'Unknown'}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 14,
               ),
             ),
           ],

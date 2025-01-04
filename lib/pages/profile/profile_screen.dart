@@ -53,7 +53,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           _currentWeight = data['currentWeight'] ?? _currentWeight;
           _goalWeight = data['goalWeight'] ?? _goalWeight;
-          _progress = (_currentWeight - 0) / (_goalWeight - 0);
+          _updateProgress();
+
+          _selectedSex = data['sex'] ?? 'M';
+          _heightController.text = (data['height'] ?? '').toString();
+          _currentWeightController.text = _currentWeight.toString();
+          _goalWeightController.text = _goalWeight.toString();
+          _selectedActivityLevel = data['activityLevel'];
 
           // Load badges
           if (data['badges'] != null) {
@@ -81,6 +87,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       }
     }
+  }
+
+  void _updateProgress() {
+    setState(() {
+      if (_goalWeight > _currentWeight) {
+        // For weight gain
+        _progress = (_currentWeight - 0) / (_goalWeight - 0);
+      } else {
+        // For weight loss
+        _progress = 1 - ((_currentWeight - _goalWeight) / _currentWeight);
+      }
+      _progress = _progress.clamp(0.0, 1.0);
+    });
   }
 
   StreamSubscription? _userDataSubscription;
@@ -175,16 +194,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           _currentWeight = newCurrentWeight;
           _goalWeight = goalWeight;
-
-          if (_goalWeight > _currentWeight) {
-            // For weight gain
-            _progress = (_currentWeight - 0) / (_goalWeight - 0);
-            if (_progress > 1.0) _progress = 1.0;
-          } else {
-            // For weight loss
-            _progress = (1 - ((_currentWeight - _goalWeight) / (_currentWeight - 0)));
-            if (_progress < 0.0) _progress = 0.0;
-          }
+          _updateProgress();
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -465,137 +475,146 @@ class _ProfileScreenState extends State<ProfileScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.grey[900],
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Update Goals",
-                    style: TextStyle(color: Colors.white, fontSize: 18)),
-                const SizedBox(height: 16),
-                Text("Sex", style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                Row(
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: Colors.grey[900],
+              content: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () => setState(() => _selectedSex = 'M'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: _selectedSex == 'M'
-                              ? Colors.white
-                              : Colors.grey[800],
-                          borderRadius: BorderRadius.circular(8),
+                    Text("Update Goals",
+                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                    const SizedBox(height: 16),
+                    Text("Sex", style: TextStyle(color: Colors.grey[400])),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () => setState(() => _selectedSex = 'M'),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: _selectedSex == 'M'
+                                  ? Colors.white
+                                  : Colors.grey[800],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text('M',
+                                style: TextStyle(
+                                    color: _selectedSex == 'M'
+                                        ? Colors.black
+                                        : Colors.white)),
+                          ),
                         ),
-                        child: Text('M',
-                            style: TextStyle(
-                                color: _selectedSex == 'M'
-                                    ? Colors.black
-                                    : Colors.white)),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () => setState(() => _selectedSex = 'F'),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: _selectedSex == 'F'
+                                  ? Colors.white
+                                  : Colors.grey[800],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text('F',
+                                style: TextStyle(
+                                    color: _selectedSex == 'F'
+                                        ? Colors.black
+                                        : Colors.white)),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    Text("Height (cm)", style: TextStyle(color: Colors.grey[400])),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _heightController,
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: () => setState(() => _selectedSex = 'F'),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: _selectedSex == 'F'
-                              ? Colors.white
-                              : Colors.grey[800],
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text('F',
-                            style: TextStyle(
-                                color: _selectedSex == 'F'
-                                    ? Colors.black
-                                    : Colors.white)),
+                    const SizedBox(height: 16),
+                    Text("Current Weight (kg)",
+                        style: TextStyle(color: Colors.grey[400])),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _currentWeightController,
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
                       ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text("Goal Weight (kg)",
+                        style: TextStyle(color: Colors.grey[400])),
+                    const SizedBox(height: 4),
+                    TextField(
+                      controller: _goalWeightController,
+                      style: const TextStyle(color: Colors.white),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.grey[800],
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0)),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text("Activity Level",
+                        style: TextStyle(color: Colors.grey[400])),
+                    const SizedBox(height: 4),
+                    DropdownButton<String>(
+                      value: _selectedActivityLevel,
+                      hint: Text('Select',
+                          style: TextStyle(color: Colors.grey[400])),
+                      isExpanded: true,
+                      dropdownColor: Colors.grey[900],
+                      items: _activityLevels.map((level) => DropdownMenuItem(
+                        value: level,
+                        child: Text(level,
+                            style: const TextStyle(color: Colors.white)),
+                      )).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedActivityLevel = value;
+                        });
+                      },
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
-                Text("Height (cm)", style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                TextField(
-                  controller: _heightController,
-                  style: const TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("Cancel", style: TextStyle(color: Colors.white)),
                 ),
-                const SizedBox(height: 16),
-                Text("Current Weight (kg)",
-                    style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                TextField(
-                  controller: _currentWeightController,
-                  style: const TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+                ElevatedButton(
+                  onPressed: () {
+                    _updateGoals();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text("Goal Weight (kg)",
-                    style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                TextField(
-                  controller: _goalWeightController,
-                  style: const TextStyle(color: Colors.white),
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Text("Activity Level",
-                    style: TextStyle(color: Colors.grey[400])),
-                const SizedBox(height: 4),
-                DropdownButton<String>(
-                  value: _selectedActivityLevel,
-                  hint: Text('Select',
-                      style: TextStyle(color: Colors.grey[400])),
-                  isExpanded: true,
-                  dropdownColor: Colors.grey[900],
-                  items: _activityLevels.map((level) => DropdownMenuItem(
-                    value: level,
-                    child: Text(level,
-                        style: const TextStyle(color: Colors.white)),
-                  )).toList(),
-                  onChanged: (value) =>
-                      setState(() => _selectedActivityLevel = value),
+                  child: Text("Save", style: TextStyle(color: Colors.white)),
                 ),
               ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text("Cancel", style: TextStyle(color: Colors.white)),
-            ),
-            ElevatedButton(
-              onPressed: _updateGoals,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              ),
-              child: Text("Save", style: TextStyle(color: Colors.white)),
-            ),
-          ],
+            );
+          },
         );
       },
     );
@@ -643,4 +662,3 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 }
-
