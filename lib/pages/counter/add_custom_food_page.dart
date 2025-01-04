@@ -16,7 +16,6 @@ class _AddCustomFoodPageState extends State<AddCustomFoodPage> {
   String _name = '';
   int _calories = 0;
   String _description = '';
-  String _ingredients = '';
 
   Future<void> _saveCustomFood() async {
     if (_formKey.currentState!.validate()) {
@@ -26,7 +25,6 @@ class _AddCustomFoodPageState extends State<AddCustomFoodPage> {
         'name': _name,
         'calories': _calories,
         'description': '$_calories kcal, $_description',
-        'ingredients': _ingredients,
       };
 
       try {
@@ -150,26 +148,6 @@ class _AddCustomFoodPageState extends State<AddCustomFoodPage> {
                       _description = value!;
                     },
                   ),
-                  SizedBox(height: 16),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Ingredients',
-                      labelStyle: TextStyle(color: Colors.white),
-                      filled: true,
-                      fillColor: Colors.grey[900],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.blue),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    style: TextStyle(color: Colors.white),
-                    onSaved: (value) {
-                      _ingredients = value!;
-                    },
-                  ),
                   SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
@@ -198,3 +176,4 @@ class _AddCustomFoodPageState extends State<AddCustomFoodPage> {
     );
   }
 }
+

@@ -44,7 +44,7 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
     super.initState();
     _selectedDate = DateTime.now();
     _userId = _auth.currentUser?.uid ?? 'defaultUser';
-    _listenToUserGoalCalories(); // Replaced _loadUserGoalCalories with a real-time listener
+    _listenToUserGoalCalories();
     _loadDataForDate(_selectedDate);
     _loadFoodLibrary();
   }
@@ -127,7 +127,6 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
         _updateCalories();
       });
       await _saveDataToFirestore();
-      _showRecommendationPopup();
     }
   }
 
@@ -148,7 +147,6 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
       _updateCalories();
     });
     await _saveDataToFirestore();
-    _showRecommendationPopup();
   }
 
   Future<void> _saveDataToFirestore() async {
@@ -174,12 +172,43 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
     if (remainingCalories > 0) {
       List<Map<String, dynamic>> recommendations = _getRecommendations(remainingCalories);
       title = 'Food Recommendations';
-      content = SingleChildScrollView(
-        child: ListBody(
-          children: recommendations.map((food) =>
-              Text('${food['name']} (${food['calories']} kcal)')
-          ).toList(),
-        ),
+      content = Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'You have $remainingCalories calories remaining.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 16),
+          ...recommendations.map((food) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  food['name'],
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  '${food['calories']} kcal',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
+        ],
       );
     } else {
       List<Map<String, dynamic>> foodsToRemove = _getFoodsToRemove(-remainingCalories);
@@ -188,13 +217,45 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('You have exceeded your calorie goal by ${-remainingCalories} kcal.'),
-          SizedBox(height: 10),
-          Text('Consider removing one or more of these items:'),
-          SizedBox(height: 5),
-          ...foodsToRemove.map((food) =>
-              Text('• ${food['name']} (${food['calories']} kcal) from ${food['meal']}')
-          ).toList(),
+          Text(
+            'You have exceeded your calorie goal by ${-remainingCalories} kcal.',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white,
+            ),
+          ),
+          SizedBox(height: 16),
+          Text(
+            'Consider removing:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue,
+            ),
+          ),
+          SizedBox(height: 8),
+          ...foodsToRemove.map((food) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${food['name']} (${food['meal']})',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  '${food['calories']} kcal',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            ),
+          )).toList(),
         ],
       );
     }
@@ -202,17 +263,46 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(title),
-          content: content,
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+        return Dialog(
+          backgroundColor: Color(0xFF1A1A1A),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                SizedBox(height: 16),
+                SingleChildScrollView(
+                  child: content,
+                ),
+                SizedBox(height: 16),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text(
+                      'Close',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
@@ -282,97 +372,130 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
               ),
             ),
           ),
-          MyCustomCalendar(
-            onDateChanged: _onDateChanged,
-            initialDate: _selectedDate,
+          Stack(
+            children: [
+              MyCustomCalendar(
+                onDateChanged: _onDateChanged,
+                initialDate: _selectedDate,
+              ),
+            ],
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+            child: Column(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 15.0),
-                        child: Text("$totalCalories", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
-                      ),
-                      SizedBox(height: 8),
-                      Padding(
-                        padding: EdgeInsets.only(left: 12.0),
-                        child: Text("Taken", style: TextStyle(fontSize: 14, color: Colors.white70)),
-                      ),
-                    ],
-                  ),
-                ),
-                Stack(
-                  alignment: Alignment.center,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    SizedBox(
-                      height: 140,
-                      width: 140,
-                      child: CircularProgressIndicator(
-                        value: (totalCalories / _goalCalories).clamp(0.0, 1.0),
-                        strokeWidth: 20,
-                        backgroundColor: Colors.grey,
-                        color: totalCalories > _goalCalories ? Colors.red : Colors.green,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(left: 15.0),
+                            child: Text("$totalCalories", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                          ),
+                          SizedBox(height: 8),
+                          Padding(
+                            padding: EdgeInsets.only(left: 12.0),
+                            child: Text("Taken", style: TextStyle(fontSize: 14, color: Colors.white70)),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: 115,
-                      width: 115,
-                      child: CircularProgressIndicator(
-                        value: 1,
-                        strokeWidth: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Stack(
+                      alignment: Alignment.center,
                       children: [
-                        Text("$_goalCalories", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
-                        SizedBox(height: 4),
-                        Text("Goal", style: TextStyle(fontSize: 16, color: Colors.white70)),
+                        SizedBox(
+                          height: 140,
+                          width: 140,
+                          child: CircularProgressIndicator(
+                            value: (totalCalories / _goalCalories).clamp(0.0, 1.0),
+                            strokeWidth: 20,
+                            backgroundColor: Colors.grey,
+                            color: totalCalories > _goalCalories ? Colors.red : Colors.green,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 115,
+                          width: 115,
+                          child: CircularProgressIndicator(
+                            value: 1,
+                            strokeWidth: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("$_goalCalories", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white)),
+                            SizedBox(height: 4),
+                            Text("Goal", style: TextStyle(fontSize: 16, color: Colors.white70)),
+                          ],
+                        ),
                       ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(right: 13.0),
+                            child: Text(
+                                remainingCalories >= 0 ? "$remainingCalories" : "0",
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Padding(
+                            padding: EdgeInsets.only(right: 13.0),
+                            child: Text(
+                                remainingCalories >= 0 ? "Remaining" : "Exceeded",
+                                style: TextStyle(fontSize: 14, color: Colors.white70)
+                            ),
+                          ),
+                          if (remainingCalories < 0)
+                            Padding(
+                              padding: EdgeInsets.only(right: 13.0),
+                              child: Text(
+                                "by ${-remainingCalories}",
+                                style: TextStyle(fontSize: 14, color: Colors.red),
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 13.0),
-                        child: Text(
-                            remainingCalories >= 0 ? "$remainingCalories" : "0",
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton.icon(
+                      onPressed: _showRecommendationPopup,
+                      icon: Icon(
+                        Icons.help_outline_rounded,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      label: Text(
+                        'Recommendations',
+                        style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 14,
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Padding(
-                        padding: EdgeInsets.only(right: 13.0),
-                        child: Text(
-                            remainingCalories >= 0 ? "Remaining" : "Exceeded",
-                            style: TextStyle(fontSize: 14, color: Colors.white70)
-                        ),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        minimumSize: Size(40, 40),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
-                      if (remainingCalories < 0)
-                        Padding(
-                          padding: EdgeInsets.only(right: 13.0),
-                          child: Text(
-                            "by ${-remainingCalories}",
-                            style: TextStyle(fontSize: 14, color: Colors.red),
-                          ),
-                        ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 10),
           Expanded(
             child: SingleChildScrollView(
               child: Column(
@@ -434,3 +557,4 @@ class _CounterPageState extends State<CounterPage> with AutomaticKeepAliveClient
     );
   }
 }
+
