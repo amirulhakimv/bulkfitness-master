@@ -1,7 +1,9 @@
 import 'package:bulkfitness/pages/home/exercise_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../components/my_appbar.dart';
+import 'user_add_exercise_page.dart';
 
 class TipsPage extends StatefulWidget {
   final Function(List<Map<String, dynamic>>) onExercisesSelected;
@@ -361,7 +363,6 @@ class _TipsPageState extends State<TipsPage> {
     });
 
     try {
-      await _uploadExercisesToFirebase();
       await _loadExercises();
     } catch (e) {
       print('Error initializing exercises: $e');
@@ -377,19 +378,32 @@ class _TipsPageState extends State<TipsPage> {
 
   Future<void> _loadExercises() async {
     try {
-      final QuerySnapshot exerciseSnapshot = await FirebaseFirestore.instance
+      final user = FirebaseAuth.instance.currentUser;
+
+      final QuerySnapshot defaultExerciseSnapshot = await FirebaseFirestore.instance
           .collection('exercises')
           .get();
 
-      print('Loaded ${exerciseSnapshot.docs.length} exercises from Firestore');
+      List<QueryDocumentSnapshot> userExerciseDocs = [];
+      if (user != null) {
+        final QuerySnapshot userExerciseSnapshot = await FirebaseFirestore.instance
+            .collection('user_exercises')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+        userExerciseDocs = userExerciseSnapshot.docs;
+      }
 
-      final List<Map<String, dynamic>> firestoreExercises = exerciseSnapshot.docs
-          .map((doc) {
+      print('Loaded ${defaultExerciseSnapshot.docs.length} default exercises and ${userExerciseDocs.length} user exercises from Firestore');
+
+      final List<Map<String, dynamic>> firestoreExercises = [
+        ...defaultExerciseSnapshot.docs,
+        ...userExerciseDocs,
+      ].map((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return {
           'id': data['id'] ?? doc.id,
           'title': data['title'] ?? '',
-          'icon': _getIconData(data['icon']?.toString() ?? 'fitness_center'),
+          'icon': Icons.fitness_center,
           'muscleGroup': data['muscleGroup'] ?? '',
           'sets': (data['sets'] as List<dynamic>?)?.map((set) => {
             'set': set['set'] ?? 1,
@@ -397,6 +411,7 @@ class _TipsPageState extends State<TipsPage> {
             'reps': set['reps'] ?? '0',
             'multiplier': set['multiplier'] ?? 'x',
           }).toList() ?? [{'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'}],
+          'isUserCreated': data['userId'] != null,
         };
       }).toList();
 
@@ -409,41 +424,6 @@ class _TipsPageState extends State<TipsPage> {
     }
   }
 
-  Future<void> _uploadExercisesToFirebase() async {
-    try {
-      final batch = FirebaseFirestore.instance.batch();
-      final exercisesRef = FirebaseFirestore.instance.collection('exercises');
-
-      print('Starting to upload ${allExercises.length} exercises to Firebase');
-
-      for (var exercise in allExercises) {
-        final docRef = exercisesRef.doc(exercise['id']);
-        batch.set(docRef, {
-          'id': exercise['id'],
-          'title': exercise['title'],
-          'icon': exercise['icon'],
-          'muscleGroup': exercise['muscleGroup'],
-          'sets': exercise['sets'],
-        }, SetOptions(merge: true));
-      }
-
-      await batch.commit();
-      print('Exercises uploaded successfully');
-    } catch (e) {
-      print('Error uploading exercises: $e');
-      throw e;
-    }
-  }
-
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'fitness_center':
-        return Icons.fitness_center;
-    // Add more cases for other icon names as needed
-      default:
-        return Icons.fitness_center;
-    }
-  }
 
   List<Map<String, dynamic>> get filteredExercises {
     return allExercises.where((exercise) {
@@ -533,10 +513,23 @@ class _TipsPageState extends State<TipsPage> {
       MaterialPageRoute(
         builder: (context) => ExerciseDetailPage(
           exercise: exercise,
-          exerciseId: exercise['id'],
+          exerciseId: exercise['id'].toString(),
         ),
       ),
     );
+  }
+
+  void _navigateToUserAddExercisePage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserAddExercisePage()),
+    );
+
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        allExercises.add(result);
+      });
+    }
   }
 
   Widget buildExerciseItem(Map<String, dynamic> exercise) {
@@ -599,6 +592,20 @@ class _TipsPageState extends State<TipsPage> {
                 ),
               ),
             ],
+            if (exercise['isUserCreated'] == true) ...[
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Text(
+                  'Custom',
+                  style: TextStyle(color: Colors.green, fontSize: 12),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -634,51 +641,59 @@ class _TipsPageState extends State<TipsPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 48, // Set a fixed height to match the button
                     decoration: BoxDecoration(
-                      color: Colors.grey[900],
+                      color: Colors.grey[800],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextField(
                       controller: _searchController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.search, color: Colors.grey[600]),
-                        hintText: 'Search workout',
-                        hintStyle: TextStyle(color: Colors.grey[600]),
-                        border: InputBorder.none,
-                      ),
                       onChanged: (value) {
                         setState(() {
                           _searchQuery = value;
                         });
                       },
+                      decoration: InputDecoration(
+                        hintText: 'Search Exercises',
+                        hintStyle: TextStyle(color: Colors.white70),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        prefixIcon: Icon(Icons.search, color: Colors.white70),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.add, color: Colors.white),
+                          onPressed: _navigateToUserAddExercisePage,
+                          tooltip: 'Add Custom Exercises',
+                        ),
+                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: _showMuscleGroupFilter,
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
-                  ),
-                  label: Text(
-                    _selectedMuscleGroup ?? 'Filter',
-                    style: TextStyle(
+                Container(
+                  height: 48, // Set the same height as the search bar
+                  child: ElevatedButton.icon(
+                    onPressed: _showMuscleGroupFilter,
+                    icon: Icon(
+                      Icons.filter_list,
                       color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[900],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    label: Text(
+                      _selectedMuscleGroup ?? 'Filter',
+                      style: TextStyle(
+                        color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[800],
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                    ),
                   ),
                 ),
               ],
@@ -711,4 +726,3 @@ class _TipsPageState extends State<TipsPage> {
     );
   }
 }
-

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/my_appbar.dart';
 import '../../components/my_button.dart';
-import '../../components/my_text_field.dart';
 
 class AddExercisePage extends StatefulWidget {
   const AddExercisePage({Key? key}) : super(key: key);
@@ -34,22 +33,19 @@ class _AddExercisePageState extends State<AddExercisePage> {
   Future<void> _addExercise() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Create a new document reference
         DocumentReference docRef = FirebaseFirestore.instance.collection('exercises').doc();
 
-        // Prepare the exercise data
         Map<String, dynamic> exerciseData = {
-          'id': docRef.id, // Use the document ID as the exercise ID
+          'id': docRef.id,
           'title': _titleController.text.trim(),
           'muscleGroup': _selectedMuscleGroup,
-          'icon': 'fitness_center', // Default icon name
+          'icon': 'fitness_center',
           'sets': [
             {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'}
           ],
           'createdAt': FieldValue.serverTimestamp(),
         };
 
-        // Set the data for the new document
         await docRef.set(exerciseData);
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -91,11 +87,26 @@ class _AddExercisePageState extends State<AddExercisePage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
-                MyTextField(
+                const SizedBox(height: 16),
+                TextFormField(
                   controller: _titleController,
-                  hintText: 'Exercise Title',
-                  obscureText: false,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Exercise Title',
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter an exercise title';
@@ -103,20 +114,27 @@ class _AddExercisePageState extends State<AddExercisePage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   value: _selectedMuscleGroup,
                   decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.grey[900],
+                    labelText: 'Muscle Group',
+                    labelStyle: const TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                   ),
                   style: const TextStyle(color: Colors.white),
                   dropdownColor: Colors.grey[900],
-                  hint: const Text('Select Muscle Group', style: TextStyle(color: Colors.grey)),
                   items: muscleGroups.map((String group) {
                     return DropdownMenuItem<String>(
                       value: group,
@@ -135,10 +153,12 @@ class _AddExercisePageState extends State<AddExercisePage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
-                MyButton(
-                  onTap: _addExercise,
-                  text: 'Add Exercise',
+                const SizedBox(height: 24),
+                Center(
+                  child: MyButton(
+                    onTap: _addExercise,
+                    text: 'Add Exercise',
+                  ),
                 ),
               ],
             ),

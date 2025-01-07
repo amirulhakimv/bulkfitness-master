@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../components/my_text_field.dart';
 import '../../components/my_button.dart';
+import '../admin/admin_login_page.dart';
 import 'login_page.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -108,10 +109,85 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     }
   }
 
+  void _navigateToAdminLoginPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AdminLoginPage(),
+      ),
+    );
+  }
+
+  void _navigateToLoginPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.grey[900],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: Icon(Icons.fitness_center, color: Colors.black, size: 30),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'BULK',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              ListTile(
+                leading: Icon(Icons.admin_panel_settings, color: Colors.white),
+                title: Text('Admin Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToAdminLoginPage,
+              ),
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.white),
+                title: Text('User Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToLoginPage,
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

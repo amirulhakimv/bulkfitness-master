@@ -109,6 +109,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void _navigateToLoginPage() {
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,35 +130,48 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       drawer: Drawer(
-        backgroundColor: Colors.grey[850],
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+        child: Container(
+          color: Colors.grey[900],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: Icon(Icons.fitness_center, color: Colors.black, size: 30),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'BULK',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: const Center(
-                child: Text(
-                  'Menu',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+              SizedBox(height: 20),
+              ListTile(
+                leading: Icon(Icons.admin_panel_settings, color: Colors.white),
+                title: Text('Admin Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToAdminLoginPage,
               ),
-            ),
-            ListTile(
-              title: const Text('Admin Login'),
-              onTap: _navigateToAdminLoginPage,
-            ),
-            // Add more menu items here
-          ],
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.white),
+                title: Text('User Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToLoginPage,
+              ),
+            ],
+          ),
         ),
       ),
       body: SafeArea(
@@ -273,3 +290,4 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+

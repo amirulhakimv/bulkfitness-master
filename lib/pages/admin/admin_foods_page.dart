@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bulkfitness/components/my_appbar.dart';
+import 'package:bulkfitness/components/my_text_field.dart';
 
 class AdminFoodsPage extends StatefulWidget {
   const AdminFoodsPage({super.key});
@@ -13,92 +14,159 @@ class _AdminFoodsPageState extends State<AdminFoodsPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
 
-  // Method to delete a food item by its document ID
   Future<void> _deleteFood(String foodId) async {
     try {
-      // Delete the food item by document ID
       await FirebaseFirestore.instance.collection('custom_foods').doc(foodId).delete();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Food item deleted successfully')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Food item deleted successfully')),
+      );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error deleting food: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error deleting food: $e')),
+      );
     }
   }
 
-  // Method to edit food details
-  Future<void> _editFood(String foodId, String currentName, String currentDescription) async {
+  Future<void> _editFood(String foodId, String currentName, String currentDescription, int currentCalories) async {
     TextEditingController nameController = TextEditingController(text: currentName);
     TextEditingController descriptionController = TextEditingController(text: currentDescription);
+    TextEditingController caloriesController = TextEditingController(text: currentCalories.toString());
 
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Food'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(hintText: 'Food Name'),
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[900],
+        title: const Text('Edit Food', style: TextStyle(color: Colors.white)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Food Name',
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.blue),
+                ),
               ),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(hintText: 'Food Description'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
             ),
-            TextButton(
-              onPressed: () async {
-                // Update the food document in Firestore
-                await FirebaseFirestore.instance.collection('custom_foods').doc(foodId).update({
-                  'name': nameController.text,
-                  'description': descriptionController.text,
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Save'),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: caloriesController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Calories',
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.blue),
+                ),
+              ),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: descriptionController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                labelText: 'Food Description',
+                labelStyle: const TextStyle(color: Colors.grey),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.grey),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  borderSide: const BorderSide(color: Colors.blue),
+                ),
+              ),
+              maxLines: 3,
             ),
           ],
-        );
-      },
+        ),
+        actions: [
+          TextButton(
+            child: const Text('Cancel', style: TextStyle(color: Colors.white)),
+            onPressed: () => Navigator.pop(context),
+          ),
+          TextButton(
+            child: const Text('Save', style: TextStyle(color: Colors.blue)),
+            onPressed: () async {
+              int? calories = int.tryParse(caloriesController.text);
+              if (calories == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Please enter a valid number for calories')),
+                );
+                return;
+              }
+              await FirebaseFirestore.instance.collection('custom_foods').doc(foodId).update({
+                'name': nameController.text,
+                'description': descriptionController.text,
+                'calories': calories,
+              });
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppbar(showBackButton: true),
+      backgroundColor: Colors.black,
+      appBar: const MyAppbar(
+        showBackButton: true,
+      ),
       body: Column(
         children: [
-          // Search bar
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: TextField(
-              controller: _searchController,
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value.toLowerCase();
-                });
-              },
-              decoration: InputDecoration(
-                hintText: 'Search foods...',
-                hintStyle: TextStyle(color: Colors.grey[400]),
-                prefixIcon: const Icon(Icons.search, color: Colors.white),
-                filled: true,
-                fillColor: Colors.grey[800],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
+            child: Container(
+              height: 48,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: BorderRadius.circular(8),
               ),
-              style: const TextStyle(color: Colors.white),
+              child: TextField(
+                controller: _searchController,
+                style: const TextStyle(color: Colors.white),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.search, color: Colors.grey[600]),
+                  hintText: 'Search foods',
+                  hintStyle: TextStyle(color: Colors.grey[600]),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase();
+                  });
+                },
+              ),
             ),
           ),
           Expanded(
@@ -136,39 +204,42 @@ class _AdminFoodsPageState extends State<AdminFoodsPage> {
                   itemBuilder: (context, index) {
                     final doc = foods[index];
                     final food = doc.data() as Map<String, dynamic>;
-                    final foodId = doc.id;  // Get the document ID
+                    final foodId = doc.id;
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      color: Colors.grey[850],
-                      child: ListTile(
-                        title: Text(
-                          food['name'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                    return ListTile(
+                      title: Text(
+                        food['name'],
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Calories: ${food['calories']}',
+                            style: TextStyle(color: Colors.grey[400]),
                           ),
-                        ),
-                        subtitle: Text(
-                          food['description'],
-                          style: TextStyle(color: Colors.grey[400]),
-                        ),
-                        trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.blue),
-                              onPressed: () {
-                                // Call _editFood method for editing
-                                _editFood(foodId, food['name'], food['description']);
-                              },
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.red),
-                              onPressed: () => _deleteFood(foodId),  // Pass the foodId to delete
-                            ),
-                          ],
-                        ),
+                          Text(
+                            food['description'],
+                            style: TextStyle(color: Colors.grey[400]),
+                          ),
+                        ],
+                      ),
+                      leading: const Icon(
+                        Icons.fastfood,
+                        color: Colors.white,
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () => _editFood(foodId, food['name'], food['description'], food['calories']),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteFood(foodId),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -178,7 +249,6 @@ class _AdminFoodsPageState extends State<AdminFoodsPage> {
           ),
         ],
       ),
-      backgroundColor: Colors.black,
     );
   }
 

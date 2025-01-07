@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Add this for Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/my_button.dart';
 import '../../components/my_text_field.dart';
 import 'login_page.dart';
+import '../admin/admin_login_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -38,27 +39,22 @@ class _SignupPageState extends State<SignupPage> {
       );
 
       try {
-        // Create user in Firebase Authentication
         final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
-        // Update the user's display name
         await credential.user!.updateDisplayName(_nameController.text.trim());
 
-        // Save additional user data to Firestore with selected role
         await FirebaseFirestore.instance.collection('users').doc(credential.user!.uid).set({
           'name': _nameController.text.trim(),
           'email': _emailController.text.trim(),
-          'role': _role, // Role selected by the user
+          'role': _role,
           'createdAt': FieldValue.serverTimestamp(),
         });
 
-        // Dismiss the loading indicator
         Navigator.of(context).pop();
 
-        // Show confirmation popup
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -101,11 +97,11 @@ class _SignupPageState extends State<SignupPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                         ),
                         onPressed: () {
-                          Navigator.of(context).pop(); // Close the dialog
+                          Navigator.of(context).pop();
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => LoginPage(isNewSignup: true), // Pass isNewSignup flag
+                              builder: (context) => LoginPage(isNewSignup: true),
                             ),
                           );
                         },
@@ -118,7 +114,7 @@ class _SignupPageState extends State<SignupPage> {
           },
         );
       } catch (e) {
-        Navigator.of(context).pop(); // Dismiss the loading dialog
+        Navigator.of(context).pop();
         _showErrorDialog(e.toString());
       }
     }
@@ -142,10 +138,86 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 
+  void _navigateToAdminLoginPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AdminLoginPage(),
+      ),
+    );
+  }
+
+  void _navigateToLoginPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.grey[900],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: Icon(Icons.fitness_center, color: Colors.black, size: 30),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'BULK',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              ListTile(
+                leading: Icon(Icons.admin_panel_settings, color: Colors.white),
+                title: Text('Admin Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToAdminLoginPage,
+              ),
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.white),
+                title: Text('User Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToLoginPage,
+              ),
+            ],
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
@@ -279,3 +351,4 @@ class _SignupPageState extends State<SignupPage> {
     );
   }
 }
+

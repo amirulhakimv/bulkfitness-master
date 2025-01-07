@@ -1,3 +1,4 @@
+import 'package:bulkfitness/pages/auth/login_page.dart';
 import 'package:bulkfitness/pages/auth/signup_page.dart';
 import 'package:flutter/material.dart';
 
@@ -53,6 +54,34 @@ class IntroPage extends StatelessWidget {
               ),
               text: "SIGN UP",
             ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Already have an account? ",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                ),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

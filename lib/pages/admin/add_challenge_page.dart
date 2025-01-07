@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:bulkfitness/components/my_appbar.dart';
 import 'package:bulkfitness/components/my_custom_calendar.dart';
 import 'package:bulkfitness/pages/home/exercise_library_page.dart';
+import 'package:bulkfitness/components/my_button.dart';
 
 class AddChallengePage extends StatefulWidget {
   const AddChallengePage({Key? key}) : super(key: key);
@@ -22,8 +23,10 @@ class _AddChallengePageState extends State<AddChallengePage> {
   bool _isLoading = false;
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   void _navigateToExerciseLibrary() async {
@@ -69,7 +72,6 @@ class _AddChallengePageState extends State<AddChallengePage> {
           const SnackBar(content: Text('Challenge added successfully')),
         );
 
-        // Clear the form
         _titleController.clear();
         _descriptionController.clear();
         setState(() {
@@ -253,16 +255,9 @@ class _AddChallengePageState extends State<AddChallengePage> {
                   ),
                   const SizedBox(height: 24),
                   Center(
-                    child: ElevatedButton(
-                      onPressed: _submitChallenge,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      ),
-                      child: const Text(
-                        'Save Challenge',
-                        style: TextStyle(fontSize: 18),
-                      ),
+                    child: MyButton(
+                      onTap: _submitChallenge,
+                      text: 'Save Challenge',
                     ),
                   ),
                 ],
@@ -272,13 +267,6 @@ class _AddChallengePageState extends State<AddChallengePage> {
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
-    super.dispose();
   }
 }
 

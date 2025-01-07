@@ -1,10 +1,11 @@
-import 'package:bulkfitness/pages/admin/admin_home_page.dart';
+import 'package:bulkfitness/pages/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart'; // Add this for Firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/my_button.dart';
 import '../../components/my_text_field.dart';
 import '../auth/get_started_page.dart';
+import 'admin_home_page.dart';
 
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({Key? key}) : super(key: key);
@@ -33,38 +34,28 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
       });
 
       try {
-        // Authenticate admin login using Firebase
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
-        // Get user role from Firestore
         DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).get();
 
-        // Ensure the role is admin (case-insensitive check)
         if (userDoc.exists && userDoc.data() != null) {
           Map<String, dynamic> userData = userDoc.data() as Map<String, dynamic>;
           if (userData['role']?.toLowerCase() == 'admin') {
-            Navigator.of(context).pop(); // Dismiss the loading indicator
-
-            // Navigate to CounterPage for admin
-            Navigator.pushReplacement(
-              context,
+            Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const AdminHomePage(), // Navigate to CounterPage
+                builder: (context) => const AdminHomePage(),
               ),
             );
           } else {
-            Navigator.of(context).pop(); // Dismiss the loading indicator
             _showErrorDialog("Access denied! Only admins can log in.");
           }
         } else {
-          Navigator.of(context).pop(); // Dismiss the loading indicator
           _showErrorDialog("User role not found.");
         }
       } catch (e) {
-        Navigator.of(context).pop(); // Dismiss the loading dialog
         _showErrorDialog(e.toString());
       }
 
@@ -92,6 +83,20 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     );
   }
 
+  void _navigateToAdminLoginPage() {
+    // This method is not needed in AdminLoginPage, but we'll keep it for consistency
+    Navigator.of(context).pop();
+  }
+
+  void _navigateToLoginPage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const LoginPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +107,59 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         title: const Text(
           'Admin Login',
           style: TextStyle(color: Colors.white),
+        ),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.grey[900],
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.black,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 30,
+                      child: Icon(Icons.fitness_center, color: Colors.black, size: 30),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'BULK',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              ListTile(
+                leading: Icon(Icons.admin_panel_settings, color: Colors.white),
+                title: Text('Admin Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToAdminLoginPage,
+              ),
+              ListTile(
+                leading: Icon(Icons.person, color: Colors.white),
+                title: Text('User Login', style: TextStyle(color: Colors.white)),
+                onTap: _navigateToLoginPage,
+              ),
+            ],
+          ),
         ),
       ),
       body: SafeArea(
@@ -179,3 +237,4 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
     );
   }
 }
+

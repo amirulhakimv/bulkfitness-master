@@ -77,6 +77,353 @@ class _ExerciseDetailPageState extends State<ExerciseDetailPage>
         'Feet': 'Keep your feet flat on the ground throughout the lift',
       },
     },
+    'Bulgarian Split Squat': {
+      'steps': [
+        'Stand about 2 feet in front of a bench, placing one foot on it',
+        'Lower your body by bending your front knee and lowering your hips straight down, keeping your chest up',
+        'Pause when your front thigh is parallel to the ground, ensuring your knee doesn’t go past your toes',
+        'Push through your front heel to return to the starting position',
+        'Repeat on the other leg after completing the set',
+      ],
+      'tips': {
+        'Form': 'Maintain a neutral spine and avoid leaning forward excessively',
+        'Balance': 'Focus on balancing your weight evenly between both legs',
+        'Core': 'Engage your core and keep your back straight to protect your lower back',
+      },
+    },
+    'Seated Leg Curl': {
+      'steps': [
+        'Sit on the machine with your legs fully extended and the pads resting just above your ankles',
+        'Grip the handles and adjust the seat to a comfortable position',
+        'Curl your legs by bending your knees, bringing the pads towards your glutes',
+        'Slowly return to the starting position with controlled movement',
+      ],
+      'tips': {
+        'Form': 'Keep your upper body still and avoid using momentum',
+        'Breathing': 'Exhale as you curl your legs and inhale as you return',
+      },
+    },
+    'Leg Extension': {
+      'steps': [
+        'Sit on the machine with your back against the pad and knees slightly bent',
+        'Place your feet under the lower pad with your legs bent at a 90-degree angle',
+        'Extend your legs fully, then slowly return to the starting position',
+      ],
+      'tips': {
+        'Form': 'Avoid locking your knees at the top of the movement',
+        'Breathing': 'Exhale as you extend your legs, inhale as you return',
+      },
+    },
+    'Calf Raises': {
+      'steps': [
+        'Stand with your feet shoulder-width apart, toes pointing forward',
+        'Push through the balls of your feet to raise your heels off the ground',
+        'Pause briefly at the top, then lower your heels back down',
+      ],
+      'tips': {
+        'Form': 'Keep your core engaged and your back straight',
+        'Breathing': 'Exhale as you raise, inhale as you lower',
+      },
+    },
+    'Incline Dumbbell Press': {
+      'steps': [
+        'Lie back on an incline bench, holding a dumbbell in each hand',
+        'Press the dumbbells up above your chest with arms fully extended',
+        'Lower the dumbbells slowly until your elbows are at a 90-degree angle',
+        'Press the dumbbells back to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your feet flat on the floor and maintain a slight arch in your lower back',
+        'Breathing': 'Exhale as you press up, inhale as you lower the weights',
+      },
+    },
+    'Cable Flyes': {
+      'steps': [
+        'Stand between two cable machines with the handles in each hand',
+        'Extend your arms out to the sides with a slight bend in your elbows',
+        'Bring your hands together in front of you, squeezing your chest at the top',
+        'Slowly return to the starting position',
+      ],
+      'tips': {
+        'Form': 'Avoid locking your elbows and maintain tension in the chest',
+        'Breathing': 'Exhale as you bring the handles together, inhale as you return',
+      },
+    },
+    'Pushups': {
+      'steps': [
+        'Start in a plank position with your hands placed slightly wider than shoulder-width apart',
+        'Lower your body by bending your elbows until your chest nearly touches the ground',
+        'Push through your palms to return to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your body in a straight line from head to heels',
+        'Core': 'Engage your core throughout the movement to avoid sagging your hips',
+      },
+    },
+    'Sit-ups': {
+      'steps': [
+        'Lie on your back with your knees bent and feet flat on the ground',
+        'Cross your arms over your chest or place your hands behind your head',
+        'Engage your core and lift your torso toward your knees',
+        'Lower back down with control to the starting position',
+      ],
+      'tips': {
+        'Core': 'Focus on engaging your core rather than pulling on your neck',
+        'Breathing': 'Exhale as you lift your torso, inhale as you lower it',
+      },
+    },
+    'Pull-ups': {
+      'steps': [
+        'Grip the pull-up bar with your palms facing away from you (overhand grip)',
+        'Hang with your arms fully extended and your body straight',
+        'Pull your body up by bending your elbows, bringing your chin above the bar',
+        'Lower your body back down with control',
+      ],
+      'tips': {
+        'Form': 'Engage your core and avoid swinging your legs',
+        'Breathing': 'Exhale as you pull yourself up, inhale as you lower',
+      },
+    },
+    'Bent Over Rows': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a barbell with an overhand grip',
+        'Bend your knees slightly and hinge forward at the hips',
+        'Pull the barbell towards your lower chest, squeezing your shoulder blades together',
+        'Lower the barbell back down with control',
+      ],
+      'tips': {
+        'Form': 'Keep your back flat and avoid rounding your spine',
+        'Breathing': 'Exhale as you pull the barbell up, inhale as you lower',
+      },
+    },
+    'Lat Pulldowns': {
+      'steps': [
+        'Sit at the machine with your knees secured under the pads',
+        'Grip the bar with your palms facing away from you',
+        'Pull the bar down towards your chest, squeezing your shoulder blades together',
+        'Slowly return the bar to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your chest up and avoid leaning back too far',
+        'Breathing': 'Exhale as you pull the bar down, inhale as you return it',
+      },
+    },
+    'Leg Press': {
+      'steps': [
+        'Sit on the leg press machine with your feet shoulder-width apart on the platform',
+        'Lower the platform by bending your knees to a 90-degree angle',
+        'Push through your heels to return the platform to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your knees aligned with your toes and avoid locking your knees',
+        'Breathing': 'Exhale as you push the platform, inhale as you lower it',
+      },
+    },
+    'Romanian Deadlift': {
+      'steps': [
+        'Stand with your feet hip-width apart and hold a barbell with an overhand grip',
+        'Hinge at the hips, lowering the barbell along the front of your legs while keeping your back straight',
+        'Lower the barbell until you feel a stretch in your hamstrings, then return to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your back flat and avoid rounding your spine',
+        'Breathing': 'Exhale as you lower the bar, inhale as you return to standing',
+      },
+    },
+    'Military Press': {
+      'steps': [
+        'Sit or stand with your feet shoulder-width apart and hold a barbell at shoulder height',
+        'Press the barbell overhead with arms fully extended',
+        'Lower the barbell back to shoulder height with control',
+      ],
+      'tips': {
+        'Form': 'Avoid arching your back excessively, and keep your core engaged',
+        'Breathing': 'Exhale as you press up, inhale as you lower the bar',
+      },
+    },
+    'Front Raises': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a dumbbell in each hand',
+        'Lift the dumbbells in front of you to shoulder height, keeping a slight bend in your elbows',
+        'Lower the dumbbells back to the starting position with control',
+      ],
+      'tips': {
+        'Form': 'Avoid swinging the weights and focus on controlled movements',
+        'Breathing': 'Exhale as you raise the dumbbells, inhale as you lower them',
+      },
+    },
+    'Face Pulls': {
+      'steps': [
+        'Stand facing a cable machine with the rope attachment set at upper chest height',
+        'Grip the rope with both hands, and step back to create tension on the cable',
+        'Pull the rope towards your face, keeping your elbows high and squeezing your shoulder blades together',
+        'Slowly return the rope to the starting position',
+      ],
+      'tips': {
+        'Form': 'Focus on using your rear deltoids and upper back muscles',
+        'Breathing': 'Exhale as you pull the rope, inhale as you return it',
+      },
+    },
+    'Barbell Curls': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a barbell with an underhand grip',
+        'Curl the barbell towards your chest by bending your elbows, keeping your upper arms stationary',
+        'Lower the barbell back to the starting position with control',
+      ],
+      'tips': {
+        'Form': 'Avoid using momentum and keep your elbows close to your body',
+        'Breathing': 'Exhale as you curl the bar, inhale as you lower it',
+      },
+    },
+    'Hammer Curls': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a dumbbell in each hand with a neutral grip',
+        'Curl the dumbbells towards your shoulders, keeping your elbows stationary',
+        'Lower the dumbbells back down with control',
+      ],
+      'tips': {
+        'Form': 'Avoid swinging the dumbbells and focus on your biceps',
+        'Breathing': 'Exhale as you curl the dumbbells, inhale as you lower them',
+      },
+    },
+    'Skull Crushers': {
+      'steps': [
+        'Lie on a bench and hold a barbell with an overhand grip, arms extended straight above your chest',
+        'Lower the barbell towards your forehead by bending your elbows',
+        'Extend your arms back to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your elbows stationary and avoid flaring them out',
+        'Breathing': 'Exhale as you extend your arms, inhale as you lower the bar',
+      },
+    },
+    'Rows': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a barbell with an overhand grip',
+        'Bend forward at the hips with your back flat and pull the barbell towards your torso',
+        'Lower the barbell back down with control',
+      ],
+      'tips': {
+        'Form': 'Engage your back muscles and avoid shrugging your shoulders',
+        'Breathing': 'Exhale as you pull the bar, inhale as you lower it',
+      },
+    },
+    'Overhead Press': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a barbell at shoulder height',
+        'Press the barbell overhead with arms fully extended',
+        'Lower the barbell back to shoulder height with control',
+      ],
+      'tips': {
+        'Form': 'Engage your core to prevent excessive arching in your lower back',
+        'Breathing': 'Exhale as you press the bar, inhale as you lower it',
+      },
+    },
+    'Incline Press': {
+      'steps': [
+        'Set the bench to an incline and lie back, holding a barbell or dumbbells',
+        'Press the weights above your chest with your arms fully extended',
+        'Lower the weights to shoulder level, then press them back up',
+      ],
+      'tips': {
+        'Form': 'Avoid letting your shoulders rise during the press',
+        'Breathing': 'Exhale as you press up, inhale as you lower',
+      },
+    },
+    'Lunges': {
+      'steps': [
+        'Stand with your feet hip-width apart and take a step forward with one leg',
+        'Lower your body by bending both knees until the back knee is just above the floor',
+        'Push through the front foot to return to the starting position',
+        'Repeat with the other leg',
+      ],
+      'tips': {
+        'Form': 'Keep your torso upright and avoid letting your front knee extend past your toes',
+        'Breathing': 'Exhale as you step forward, inhale as you return',
+      },
+    },
+    'Front Squats': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and a barbell resting on your front deltoids',
+        'Brace your core and squat down by bending your knees and hips',
+        'Lower until your thighs are parallel to the floor or deeper if comfortable',
+        'Push through your heels to return to standing',
+      ],
+      'tips': {
+        'Form': 'Keep your chest up and back straight to avoid rounding your spine',
+        'Breathing': 'Exhale as you rise, inhale as you lower',
+      },
+    },
+    'Hip Thrusts': {
+      'steps': [
+        'Sit on the floor with your upper back against a bench and a barbell across your hips',
+        'Roll the barbell into position and plant your feet flat on the floor',
+        'Drive through your heels to lift your hips towards the ceiling',
+        'Lower your hips back down with control',
+      ],
+      'tips': {
+        'Form': 'Keep your chin tucked and avoid overextending your lower back',
+        'Breathing': 'Exhale as you thrust your hips up, inhale as you lower them',
+      },
+    },
+    'Pec Fly': {
+      'steps': [
+        'Sit on a pec fly machine or lie on a bench holding dumbbells',
+        'Extend your arms out to the sides with a slight bend in your elbows',
+        'Bring your arms together in front of you, squeezing your chest at the top',
+        'Slowly return to the starting position',
+      ],
+      'tips': {
+        'Form': 'Avoid locking your elbows and keep tension on the chest throughout',
+        'Breathing': 'Exhale as you bring your arms together, inhale as you return',
+      },
+    },
+    'Lateral Raise': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and hold a dumbbell in each hand',
+        'Raise your arms out to the sides until they reach shoulder height',
+        'Lower your arms back down with control',
+      ],
+      'tips': {
+        'Form': 'Keep a slight bend in your elbows and avoid swinging the weights',
+        'Breathing': 'Exhale as you raise the dumbbells, inhale as you lower them',
+      },
+    },
+    'Tricep Pushdown': {
+      'steps': [
+        'Stand facing a cable machine with the rope attachment set at the top',
+        'Grip the rope with both hands and pull it down until your elbows are at your sides',
+        'Push the rope down by extending your arms fully',
+        'Slowly return the rope to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your elbows locked in place and avoid leaning forward',
+        'Breathing': 'Exhale as you push the rope down, inhale as you return it',
+      },
+    },
+    'Seated Cable Row': {
+      'steps': [
+        'Sit at a cable row machine with your feet on the platform and hands gripping the handle',
+        'Pull the handle towards your torso, squeezing your shoulder blades together',
+        'Slowly return the handle to the starting position',
+      ],
+      'tips': {
+        'Form': 'Keep your chest up and avoid leaning back excessively',
+        'Breathing': 'Exhale as you pull the handle, inhale as you return',
+      },
+    },
+    'Squat': {
+      'steps': [
+        'Stand with your feet shoulder-width apart and a barbell resting on your upper back',
+        'Brace your core and squat down by bending your knees and hips',
+        'Lower until your thighs are parallel to the floor or deeper if comfortable',
+        'Push through your heels to return to standing',
+      ],
+      'tips': {
+        'Form': 'Keep your chest up, back straight, and knees tracking over your toes',
+        'Breathing': 'Exhale as you rise, inhale as you lower',
+      },
+    },
   };
 
   Future<List<Map<String, dynamic>>> fetchExerciseHistory() async {

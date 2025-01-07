@@ -182,40 +182,52 @@ class _CustomWorkOutScreenState extends State<CustomWorkOutScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          contentPadding: EdgeInsets.zero,
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back, color: Colors.white),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  const Text(
-                    'Back',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
-                ],
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  Navigator.pop(context);
-                  _swapExercise(exercise);
-                },
-                icon: const Icon(Icons.swap_horiz, color: Colors.white),
-                label: const Text('Swap Exercise', style: TextStyle(fontSize: 24, color: Colors.white)),
-              ),
-              TextButton.icon(
-                onPressed: () {
-                  _deleteWorkout(exercise['id']);
+              ListTile(
+                leading: Icon(Icons.arrow_back, color: Colors.white),
+                title: Text(
+                  'Back',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onTap: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.delete, color: Colors.white),
-                label: const Text('Delete Exercise', style: TextStyle(fontSize: 24, color: Colors.white)),
+              ),
+              Divider(color: Colors.grey[800]),
+              Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: ListTile(
+                  leading: Icon(Icons.swap_horiz, color: Colors.blue),
+                  title: Text(
+                    'Swap Exercise',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    _swapExercise(exercise);
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 40.0),
+                child: ListTile(
+                  leading: Icon(Icons.delete, color: Colors.red),
+                  title: Text(
+                    'Delete Exercise',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onTap: () {
+                    _deleteWorkout(exercise['id']);
+                    Navigator.pop(context);
+                  },
+                ),
               ),
             ],
           ),
@@ -249,17 +261,37 @@ class _CustomWorkOutScreenState extends State<CustomWorkOutScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Discard Workout'),
-          content: Text('Are you sure you want to discard your workout? This action cannot be undone.'),
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            'Discard Workout',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to discard your workout? This action cannot be undone.',
+            style: TextStyle(color: Colors.white),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Discard'),
+              child: Text(
+                'Discard',
+                style: TextStyle(color: Colors.red),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 _discardWorkout();
@@ -392,21 +424,39 @@ class _CustomWorkOutScreenState extends State<CustomWorkOutScreen> {
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Rest Timer'),
-          backgroundColor: Colors.grey,
-          content: MyTimer(
-            initialSeconds: restTime,
-            isWorkoutTimer: false,
-            onComplete: () {
-              Navigator.of(context).pop();
-              setState(() {
-                isRestTimerRunning = false;
-              });
-            },
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            'Rest Timer',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              MyTimer(
+                initialSeconds: restTime,
+                isWorkoutTimer: false,
+                onComplete: () {
+                  Navigator.of(context).pop();
+                  setState(() {
+                    isRestTimerRunning = false;
+                  });
+                },
+              ),
+            ],
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Skip'),
+              child: Text(
+                'Skip',
+                style: TextStyle(color: Colors.blue),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 setState(() {
@@ -691,7 +741,7 @@ class _CustomWorkOutScreenState extends State<CustomWorkOutScreen> {
                   _updateWorkout(exercise['id'], exercise);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
+                  backgroundColor: Colors.grey[900],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),

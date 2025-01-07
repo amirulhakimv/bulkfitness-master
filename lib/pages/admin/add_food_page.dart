@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../components/my_appbar.dart';
 import '../../components/my_button.dart';
-import '../../components/my_text_field.dart';
 
 class AddFoodPage extends StatefulWidget {
   const AddFoodPage({Key? key}) : super(key: key);
@@ -28,27 +27,23 @@ class _AddFoodPageState extends State<AddFoodPage> {
   Future<void> _addFood() async {
     if (_formKey.currentState!.validate()) {
       try {
-        // Create a new document reference in the 'custom_foods' collection
         DocumentReference docRef =
         FirebaseFirestore.instance.collection('custom_foods').doc();
 
-        // Prepare the food data
         Map<String, dynamic> foodData = {
-          'id': docRef.id, // Use the document ID as the food ID
+          'id': docRef.id,
           'name': _nameController.text.trim(),
           'calories': int.parse(_caloriesController.text.trim()),
           'description': _descriptionController.text.trim(),
           'createdAt': FieldValue.serverTimestamp(),
         };
 
-        // Set the data for the new document
         await docRef.set(foodData);
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Food added successfully')),
         );
 
-        // Clear the fields after adding food
         _nameController.clear();
         _caloriesController.clear();
         _descriptionController.clear();
@@ -83,11 +78,26 @@ class _AddFoodPageState extends State<AddFoodPage> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 20),
-                MyTextField(
+                const SizedBox(height: 16),
+                TextFormField(
                   controller: _nameController,
-                  hintText: 'Food Name',
-                  obscureText: false,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Food Name',
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a food name';
@@ -95,11 +105,26 @@ class _AddFoodPageState extends State<AddFoodPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
-                MyTextField(
+                const SizedBox(height: 16),
+                TextFormField(
                   controller: _caloriesController,
-                  hintText: 'Calories',
-                  obscureText: false,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: 'Calories',
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
+                    ),
+                  ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -111,20 +136,27 @@ class _AddFoodPageState extends State<AddFoodPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 TextFormField(
                   controller: _descriptionController,
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
-                    hintText: 'Description',
-                    filled: true,
-                    fillColor: Colors.grey[900],
+                    labelText: 'Description',
+                    labelStyle: const TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.grey),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: const BorderSide(color: Colors.blue),
                     ),
                   ),
                   maxLines: 3,
-                  style: const TextStyle(color: Colors.white),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -132,10 +164,12 @@ class _AddFoodPageState extends State<AddFoodPage> {
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
-                MyButton(
-                  onTap: _addFood,
-                  text: 'Add Food',
+                const SizedBox(height: 24),
+                Center(
+                  child: MyButton(
+                    onTap: _addFood,
+                    text: 'Add Food',
+                  ),
                 ),
               ],
             ),
@@ -145,3 +179,4 @@ class _AddFoodPageState extends State<AddFoodPage> {
     );
   }
 }
+

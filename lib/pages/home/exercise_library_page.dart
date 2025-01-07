@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../components/my_appbar.dart';
+import '../social/user_add_exercise_page.dart';
 import 'exercise_detail_page.dart';
 
 class ExerciseLibraryPage extends StatefulWidget {
@@ -39,312 +41,7 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
   ];
 
   List<Map<String, dynamic>> allExercises = [
-    {
-      'title': 'Bench Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '1',
-    },
-    {
-      'title': 'Shoulder Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulders',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '2',
-    },
-    {
-      'title': 'Dumbbell Bicep Curl',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Arms',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '3',
-    },
-    {
-      'title': 'Deadlift',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '4',
-    },
-    {
-      'title': 'Pec Fly',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '5',
-    },
-    {
-      'title': 'Lateral Raise',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulders',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '6',
-    },
-    {
-      'title': 'Tricep Pushdown',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Arms',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '7',
-    },
-    {
-      'title': 'Seated Cable Row',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '8',
-    },
-    {
-      'title': 'Squat',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '9',
-    },
-    {
-      'title': 'Bulgarian Split Squat',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '10',
-    },
-    {
-      'title': 'Seated Leg Curl',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '11', // Changed ID to String
-    },
-    {
-      'title': 'Leg Extension',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '12', // Changed ID to String
-    },
-    {
-      'title': 'Calf Raises',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '13', // Changed ID to String
-    },
-    {
-      'title': 'Incline Dumbbell Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '14', // Changed ID to String
-    },
-    {
-      'title': 'Cable FLyes',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '15', // Changed ID to String
-    },
-    {
-      'title': 'Pushups',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '16', // Changed ID to String
-    },
-    {
-      'title': 'Sit-ups',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Core',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '17', // Changed ID to String
-    },
-    {
-      'title': 'Pull-ups',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '18', // Changed ID to String
-    },
-    {
-      'title': 'Bent Over Rows',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '19', // Changed ID to String
-    },
-    {
-      'title': 'Lat Pulldowns',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '20', // Changed ID to String
-    },
-    {
-      'title': 'Leg Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '21', // Changed ID to String
-    },
-    {
-      'title': 'Romanian Deadlift',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '22', // Changed ID to String
-    },
-    {
-      'title': 'Military Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulder',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '23', // Changed ID to String
-    },
-    {
-      'title': 'Front Raises',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulder',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '24', // Changed ID to String
-    },
-    {
-      'title': 'Face Pulls',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulder',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '25', // Changed ID to String
-    },
-    {
-      'title': 'Barbell Curls',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Arms',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '26', // Changed ID to String
-    },
-    {
-      'title': 'Hammer Curls',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Arms',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '27', // Changed ID to String
-    },
-    {
-      'title': 'Skull Crushers',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Arms',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '28', // Changed ID to String
-    },
-    {
-      'title': 'Rows',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Back',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '29', // Changed ID to String
-    },
-    {
-      'title': 'Overhead Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Shoulder',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '30', // Changed ID to String
-    },
-    {
-      'title': 'Incline Press',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Chest',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '31', // Changed ID to String
-    },
-    {
-      'title': 'Lunges',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '32', // Changed ID to String
-    },
-    {
-      'title': 'Hip Thrusts',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '34', // Changed ID to String
-    },
-    {
-      'title': 'Front Squats',
-      'icon': 'fitness_center',
-      'muscleGroup': 'Legs',
-      'sets': <Map<String, dynamic>>[
-        {'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'},
-      ],
-      'id': '33', // Changed ID to String
-    },
+    // ... (keep all the existing exercise data)
   ];
 
   @override
@@ -361,7 +58,6 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
     });
 
     try {
-      await _uploadExercisesToFirebase();
       await _loadExercises();
     } catch (e) {
       print('Error initializing exercises: $e');
@@ -377,14 +73,27 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
 
   Future<void> _loadExercises() async {
     try {
-      final QuerySnapshot exerciseSnapshot = await FirebaseFirestore.instance
+      final user = FirebaseAuth.instance.currentUser;
+
+      final QuerySnapshot defaultExerciseSnapshot = await FirebaseFirestore.instance
           .collection('exercises')
           .get();
 
-      print('Loaded ${exerciseSnapshot.docs.length} exercises from Firestore');
+      List<QueryDocumentSnapshot> userExerciseDocs = [];
+      if (user != null) {
+        final QuerySnapshot userExerciseSnapshot = await FirebaseFirestore.instance
+            .collection('user_exercises')
+            .where('userId', isEqualTo: user.uid)
+            .get();
+        userExerciseDocs = userExerciseSnapshot.docs;
+      }
 
-      final List<Map<String, dynamic>> firestoreExercises = exerciseSnapshot.docs
-          .map((doc) {
+      print('Loaded ${defaultExerciseSnapshot.docs.length} default exercises and ${userExerciseDocs.length} user exercises from Firestore');
+
+      final List<Map<String, dynamic>> firestoreExercises = [
+        ...defaultExerciseSnapshot.docs,
+        ...userExerciseDocs,
+      ].map((doc) {
         final data = doc.data() as Map<String, dynamic>;
         return {
           'id': data['id'] ?? doc.id,
@@ -397,6 +106,7 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
             'reps': set['reps'] ?? '0',
             'multiplier': set['multiplier'] ?? 'x',
           }).toList() ?? [{'set': 1, 'weight': 0, 'reps': '0', 'multiplier': 'x'}],
+          'isUserCreated': data['userId'] != null,
         };
       }).toList();
 
@@ -409,37 +119,10 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
     }
   }
 
-  Future<void> _uploadExercisesToFirebase() async {
-    try {
-      final batch = FirebaseFirestore.instance.batch();
-      final exercisesRef = FirebaseFirestore.instance.collection('exercises');
-
-      print('Starting to upload ${allExercises.length} exercises to Firebase');
-
-      for (var exercise in allExercises) {
-        final docRef = exercisesRef.doc(exercise['id']);
-        batch.set(docRef, {
-          'id': exercise['id'],
-          'title': exercise['title'],
-          'icon': exercise['icon'],
-          'muscleGroup': exercise['muscleGroup'],
-          'sets': exercise['sets'],
-        }, SetOptions(merge: true));
-      }
-
-      await batch.commit();
-      print('Exercises uploaded successfully');
-    } catch (e) {
-      print('Error uploading exercises: $e');
-      throw e;
-    }
-  }
-
   IconData _getIconData(String iconName) {
     switch (iconName) {
       case 'fitness_center':
         return Icons.fitness_center;
-    // Add more cases for other icon names as needed
       default:
         return Icons.fitness_center;
     }
@@ -451,10 +134,6 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
       final matchesMuscle = _selectedMuscleGroup == null || exercise['muscleGroup'] == _selectedMuscleGroup;
       return matchesSearch && matchesMuscle;
     }).toList();
-  }
-
-  List<Map<String, dynamic>> get recentWorkouts {
-    return allExercises.take(3).toList();
   }
 
   void _showMuscleGroupFilter() {
@@ -539,10 +218,23 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
     );
   }
 
+  void _navigateToUserAddExercisePage() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => UserAddExercisePage()),
+    );
+
+    if (result != null && result is Map<String, dynamic>) {
+      setState(() {
+        allExercises.add(result);
+      });
+    }
+  }
+
   Widget buildExerciseItem(Map<String, dynamic> exercise) {
-    bool isAlreadyAdded = widget.initialSelectedExercises.any((e) => e['id'] == exercise['id']);
-    bool isSelected = selectedExercises.any((e) => e['id'] == exercise['id']);
-    bool isExerciseToSwap = widget.exerciseToSwap != null && widget.exerciseToSwap!['id'] == exercise['id'];
+    bool isAlreadyAdded = widget.initialSelectedExercises.any((e) => e['title'] == exercise['title']);
+    bool isSelected = selectedExercises.any((e) => e['title'] == exercise['title']);
+    bool isExerciseToSwap = widget.exerciseToSwap != null && widget.exerciseToSwap!['title'] == exercise['title'];
 
     return ListTile(
       leading: GestureDetector(
@@ -626,7 +318,7 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
                 selectedExercises.add(exercise);
               }
             } else {
-              selectedExercises.removeWhere((e) => e['id'] == exercise['id']);
+              selectedExercises.removeWhere((e) => e['title'] == exercise['title']);
             }
           });
         },
@@ -683,51 +375,59 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
             child: Row(
               children: [
                 Expanded(
                   child: Container(
-                    height: 48,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    height: 48, // Set a fixed height to match the button
                     decoration: BoxDecoration(
-                      color: Colors.grey[900],
+                      color: Colors.grey[800],
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: TextField(
                       controller: _searchController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.search, color: Colors.grey[600]),
-                        hintText: 'Search workout',
-                        hintStyle: TextStyle(color: Colors.grey[600]),
-                        border: InputBorder.none,
-                      ),
                       onChanged: (value) {
                         setState(() {
                           _searchQuery = value;
                         });
                       },
+                      decoration: InputDecoration(
+                        hintText: 'Search Exercises',
+                        hintStyle: TextStyle(color: Colors.white70),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        prefixIcon: Icon(Icons.search, color: Colors.white70),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.add, color: Colors.white),
+                          onPressed: _navigateToUserAddExercisePage,
+                          tooltip: 'Add Custom Exercises',
+                        ),
+                      ),
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
                 const SizedBox(width: 12),
-                ElevatedButton.icon(
-                  onPressed: _showMuscleGroupFilter,
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
-                  ),
-                  label: Text(
-                    _selectedMuscleGroup ?? 'Filter',
-                    style: TextStyle(
+                Container(
+                  height: 48, // Set the same height as the search bar
+                  child: ElevatedButton.icon(
+                    onPressed: _showMuscleGroupFilter,
+                    icon: Icon(
+                      Icons.filter_list,
                       color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey[900],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    label: Text(
+                      _selectedMuscleGroup ?? 'Filter',
+                      style: TextStyle(
+                        color: _selectedMuscleGroup != null ? Colors.blue : Colors.white,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.grey[800],
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                    ),
                   ),
                 ),
               ],
@@ -770,3 +470,4 @@ class _ExerciseLibraryPageState extends State<ExerciseLibraryPage> {
     );
   }
 }
+

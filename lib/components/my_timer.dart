@@ -205,18 +205,37 @@ class _MyTimerState extends State<MyTimer> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text('Finish Workout'),
-          content: Text('Are you sure you want to finish your workout?'),
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          title: Text(
+            'Finish Workout',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          content: Text(
+            'Are you sure you want to finish your workout?',
+            style: TextStyle(color: Colors.white),
+          ),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel', style: TextStyle(color: Colors.black)),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.grey),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Confirm', style: TextStyle(color: Colors.black)),
+              child: Text(
+                'Confirm',
+                style: TextStyle(color: Colors.blue),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 _finishWorkout();

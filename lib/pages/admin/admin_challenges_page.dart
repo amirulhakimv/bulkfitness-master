@@ -23,6 +23,8 @@ class _AdminChallengesPageState extends State<AdminChallengesPage> {
   String? _editingChallengeId;
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now().add(const Duration(days: 7));
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   @override
   void initState() {
@@ -35,6 +37,7 @@ class _AdminChallengesPageState extends State<AdminChallengesPage> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -49,56 +52,96 @@ class _AdminChallengesPageState extends State<AdminChallengesPage> {
   }
 
   Widget _buildChallengesList() {
-    return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('challenges').snapshots(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Container(
+            height: 48,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: TextField(
+              controller: _searchController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                icon: Icon(Icons.search, color: Colors.grey[600]),
+                hintText: 'Search challenges',
+                hintStyle: TextStyle(color: Colors.grey[600]),
+                border: InputBorder.none,
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: FirebaseFirestore.instance.collection('challenges').snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        }
+              if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
 
-        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No challenges found.'));
-        }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Center(child: Text('No challenges found.'));
+              }
 
-        return ListView.builder(
-          itemCount: snapshot.data!.docs.length,
-          itemBuilder: (context, index) {
-            var challenge = snapshot.data!.docs[index];
-            var challengeData = challenge.data() as Map<String, dynamic>;
-            return ListTile(
-              title: Text(
-                challengeData['title'] ?? 'Untitled Challenge',
-                style: const TextStyle(color: Colors.white),
-              ),
-              subtitle: Text(
-                'Exercises: ${(challengeData['exercises'] as List?)?.length ?? 0}',
-                style: const TextStyle(color: Colors.grey),
-              ),
-              leading: Icon(
-                Icons.fitness_center,
-                color: Colors.white,
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () => _startEditing(challenge),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _showDeleteDialog(context, challenge),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
+              final challenges = snapshot.data!.docs
+                  .where((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return data['title'].toString().toLowerCase().contains(_searchQuery) ||
+                    data['description'].toString().toLowerCase().contains(_searchQuery);
+              })
+                  .toList();
+
+              return ListView.builder(
+                itemCount: challenges.length,
+                itemBuilder: (context, index) {
+                  var challenge = challenges[index];
+                  var challengeData = challenge.data() as Map<String, dynamic>;
+                  return ListTile(
+                    title: Text(
+                      challengeData['title'] ?? 'Untitled Challenge',
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    subtitle: Text(
+                      'Exercises: ${(challengeData['exercises'] as List?)?.length ?? 0}',
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                    leading: Icon(
+                      Icons.fitness_center,
+                      color: Colors.white,
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () => _startEditing(challenge),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _showDeleteDialog(context, challenge),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 

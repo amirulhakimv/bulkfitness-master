@@ -246,12 +246,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Email",
+                              "Username",
                               style: TextStyle(color: Colors.grey[400], fontSize: 14),
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              user?.email ?? "No Email",
+                              user?.displayName ?? "No Username",
                               style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
                           ],
@@ -360,7 +360,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     LinearProgressIndicator(
                       value: _progress,
                       backgroundColor: Colors.grey[800],
-                      color: _goalWeight > _currentWeight ? Colors.green : Colors.blue,
+                      color: _goalWeight > _currentWeight ? Colors.green : Colors.green,
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -626,14 +626,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.grey[900],
-          title: Text('Are you sure you want to logout?',
-              style: TextStyle(color: Colors.white)),
+          title: const Text(
+            'Logout Confirmation',
+            style: TextStyle(color: Colors.white),
+          ),
+          content: const Text(
+            'Are you sure you want to logout?',
+            style: TextStyle(color: Colors.white),
+          ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("Cancel", style: TextStyle(color: Colors.white)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
             ElevatedButton(
               onPressed: () {
@@ -645,7 +651,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 );
               },
-              child: Text("Yes"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text('Logout', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
