@@ -1,5 +1,4 @@
 import 'package:bulkfitness/pages/auth/login_page.dart';
-import 'package:bulkfitness/pages/profile/setting_page.dart';
 import 'package:flutter/material.dart';
 
 class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
@@ -41,25 +40,6 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
 
-            // Show setting button if enabled
-            if (showSettingButton)
-              Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    icon: const Icon(Icons.settings, color: Colors.white),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SettingPage(), // Navigate to SettingPage
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ),
             if (showlogoutButton)
               Padding(
                 padding: const EdgeInsets.only(right: 12.0),
