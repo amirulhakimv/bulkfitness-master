@@ -2,7 +2,7 @@ import 'package:bulkfitness/pages/challenge/challenges_page.dart';
 import 'package:bulkfitness/pages/counter/counter_page.dart';
 import 'package:bulkfitness/pages/home/home_page.dart';
 import 'package:bulkfitness/pages/profile/profile_screen.dart';
-import 'package:bulkfitness/pages/social/tips_page.dart';
+import 'package:bulkfitness/pages/tips/tips_page.dart';
 import 'package:flutter/material.dart';
 
 

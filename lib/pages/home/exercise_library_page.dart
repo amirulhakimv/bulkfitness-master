@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../components/my_appbar.dart';
-import '../social/user_add_exercise_page.dart';
+import '../tips/user_add_exercise_page.dart';
 import 'exercise_detail_page.dart';
 
 class ExerciseLibraryPage extends StatefulWidget {

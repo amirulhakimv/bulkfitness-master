@@ -38,7 +38,7 @@ class SettingFaqs extends StatelessWidget {
                   ),
                   _buildFAQItem(
                     'Can I share my workouts?',
-                    'Yes! After completing a workout, you\'ll see a share button that allows you to post to social media.',
+                    'Yes! After completing a workout, you\'ll see a share button that allows you to post to tips media.',
                   ),
                 ],
               ),
