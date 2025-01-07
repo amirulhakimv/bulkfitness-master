@@ -659,10 +659,11 @@ class _TipsPageState extends State<TipsPage> {
                         });
                       },
                       decoration: InputDecoration(
-                        hintText: 'Search Exercises',
-                        hintStyle: TextStyle(color: Colors.white70),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        labelText: 'Search Exercises',
+                        labelStyle: TextStyle(color: Colors.white70),
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.grey[800],
                         prefixIcon: Icon(Icons.search, color: Colors.white70),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.add, color: Colors.white),
